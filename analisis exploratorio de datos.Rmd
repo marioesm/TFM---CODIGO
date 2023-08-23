@@ -1,0 +1,1181 @@
+---
+title: "TFM"
+author: "Mario Esteban Merchan Illescas"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Borramos
+rm(list = ls())
+```
+
+# Datos {#datos}
+
+```{r}
+# Paquetes
+library(tidyverse)
+library(tidymodels)
+library(skimr)
+library(ggplot2)
+library(ggthemes) 
+df_encuesta <- read_csv(file = "./el-futuro-es-clima-anonimizado.csv")
+```
+
+## Variables
+
+Lo primero es conocer las variables
+
+```{r}
+column_names <- colnames(df_encuesta)
+print(column_names)
+```
+
+-   "coches-combustion-fosil"
+
+-   "nivel-de-concienciacion"
+
+-   "con-cual-de-estas-opciones-tiene-relacion-el-cambio-climatico-elige-las-que-te-parezcan"
+
+-   "cuanto-espacio-crees-que-se-le-da-al-cambio-climatico-en-los-medios-de-comunicacion"
+
+-   "las-actuales-politicas-climaticas-nos-van-a-hacer-vivir"
+
+-   "explica-en-una-frase-por-que-es-importante-acelerar-la-transicion-ecologica"
+
+-   "cuanto-crees-que-te-va-a-afectar-la-crisis-climatica-en-tu-vida-personal"
+
+-   "cuando-escuchas-hablar-de-crisis-climatica-que-sientes"
+
+-   "has-pensado-alguna-vez-que-estabas-sufriendo-ecoansiedad"
+
+-   "provincia"
+
+-   "crees-que-la-implicacion-politica-de-los-jovenes-podria-llegar-a-provocar-cambios-politicos-significativos-en-la-lucha-contra-el-cambio-climatico"
+
+-   "como-estas-viviendo-la-subida-de-precios-de-la-energia"
+
+-   "crees-que-el-actual-modelo-productivo-basado-en-la-explotacion-de-los-recursos-naturales-deberia-evolucionar"
+
+-   "cuantos-libros-hay-en-tu-casa"
+
+-   "comerias-mas-alimentos-bajos-en-emisiones-si-el-gobierno-facilitase-su-consumo"
+
+-   "crees-que-las-empresas-mas-contaminantes-deberian-pagar-mas-impuestos-que-aquellas-que-no-contaminan-tanto"
+
+-   "indica-si-tienes-aparatos-electronicos-de-este-tipo-en-tu-cas"
+
+-   "en-que-sector-se-deberian-priorizar-las-inversiones"
+
+-   "si-tuvieras-que-proponer-una-medida-concreta-para-facilitar-la-transicion-verde-cual-seria"
+
+-   "grado-de-relacion"
+
+-   "que-medida-consideras-mas-efectiva-para-mejorar-la-calidad-del-aire-en-las-ciudades-senala-al-menos-3"
+
+-   "que-valoras-mas"
+
+-   "estarias-dispuesto-a-aumentar-el-tiempo-de-trayecto-en-tus-viajes-de-ocio-mediante-la-utilizacion-de-transportes-menos-contaminantes"
+
+-   "que-tipo-de-acciones-relacionadas-con-la-sensibilidad-climatica-has-introducido-en-tu-vida-se-pueden-marcar-varias-opciones"
+
+-   "te-gustaria-trabajar-en-una-posicion-con-impacto-positivo-tanto-social-como-medioambiental"
+
+-   "a-que-crees-que-afectara-el-cambio-climaticose-pueden-marcar-varias-opciones"
+
+-   "que-accion-concreta-propondrias-para-acelerar-la-transicion-climatica"
+
+-   "quien-crees-que-deberia-liderar-la-lucha-contra-la-crisis-climatica-se-pueden-marcar-varias-opciones"
+
+-   "conoces-la-ley-de-cambio-climatico-y-transicion-energetica-del-gobierno-de-espana"
+
+-   "senala-aquellas-personas-que-crees-que-van-verse-afectadas-por-el-cambio-climatico"
+
+-   "indicanos-un-correo-electronico-que-utilices"
+
+-   "que-tipo-de-viajes-realizas-mas-frecuentemente"
+
+-   "religion"
+
+-   "si-pudieras-proponer-una-ley-en-el-congreso-de-los-diputados-para-paliar-la-crisis-climatica-cual-seria"
+
+-   "cuantas-de-estas-cosas-hay-en-tu-casa"
+
+-   "pensando-en-tu-futuro-inmediato-que-te-preocupa-mas-elige-tres"
+
+-   "consideras-que-se-planifica-a-largo-plazo-desde-las-instituciones-para-contrarrestar-la-emergencia-climatica"
+
+-   "ocupacion"
+
+-   "que-haria-falta-en-el-futuro-para-hacer-de-este-mundo-un-lugar-un-poco-mas-habitable-concreta-lo-mas-posible-tu-respuesta"
+
+-   "de-la-siguiente-lista-marca-las-cosas-que-haya-en-tu-casa"
+
+-   "como-te-llamas-especifica-nombre-y-primer-apellido"
+
+-   "conoces-la-asamblea-ciudadana-para-el-clima"
+
+-   "alguna-vez-has-consultado-un-informe-del-ipcc-panel-internacional-sobre-cambio-climatico"
+
+-   "sabes-lo-que-son-las-cop-cumbre-anual-que-realiza-la-convencion-marco-de-las-naciones-unidas-sobre-el-cambio-climatico"
+
+-   "senala-del-1-al-10-cuanto-crees-que-vas-vivir-respecto-la-forma-en-que-lo-hicieron-tus-padres-causa-del-cambio-climatico-1-peor-10-mejor"
+
+-   "como-afrontas-el-futuro"
+
+-   "la-solucion-a-la-crisis-climatica-vendra"
+
+-   "genero"
+
+-   "origen"
+
+-   "edad"
+
+-   "que-estudios-has-terminado"
+
+-   "cuantos-habitantes-tiene-el-municipio-en-el-que-vives"
+
+```{r}
+glimpse(df_encuesta)
+```
+
+```{r}
+skim(df_encuesta)
+```
+
+De 9464 registros que han empezado la encuesta, tan solo 4990 la han terminado.
+
+##Analisis Exploratorio Inicial
+
+```{r}
+count_data <- df_encuesta %>%
+  select(start_date, end_date) %>%
+  pivot_longer(cols = c(start_date, end_date), names_to = "event", values_to = "date") %>%
+  drop_na(date) %>%
+  count(event)
+
+# Crear el gráfico de barras
+ggplot(count_data, aes(x = event, y = n, fill = event, label = n)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Encuestas", y = "Cantidad de Encuestas", fill = "Tipo de Evento") +
+  ggtitle("Cantidad de Encuestas Iniciadas y Terminadas") +
+  theme_minimal() +
+  scale_x_discrete(labels = c("start_date" = "Iniciadas", "end_date" = "Terminadas")) +
+  scale_fill_discrete(name = "Tipo de Evento") +
+  theme(legend.position = "down") +
+  geom_text(position = position_stack(vjust = 0.5))  # Agregar etiquetas con el número de encuestas
+```
+
+### Variables Sociodemograficas
+
+#### provincia
+
+```{r}
+df_encuesta %>%
+  count(`provincia`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`provincia`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(provincia)) %>%
+  mutate(provincia = ifelse(porc < 1.5, "Otras", provincia)) %>%
+  group_by(provincia) %>%
+  summarize(porc = sum(porc)) %>%
+  bind_rows(df_encuesta %>%
+              count(`provincia`, sort = TRUE) %>%
+              mutate(porc = 100 * n / sum(n)) %>%
+              filter(!is.na(provincia)) %>%
+              mutate(provincia = ifelse(porc < 1.5, "Otras", provincia)) %>%
+              group_by(provincia) %>%
+              summarize(porc = sum(porc))) %>%
+  ggplot(aes(x = reorder(provincia, -porc), y = porc, fill = provincia)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Provincia",
+       y = "Porcentaje (%)",
+       fill = "Provincia") +
+  ggtitle("Porcentaje de Encuestas por Provincia") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        axis.text.y = element_text(size = 10))
+```
+
+#### religion
+
+```{r}
+df_encuesta %>%
+  count(`religion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`religion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(religion)) %>%
+  ggplot(aes(x = reorder(religion, -porc), y = porc, fill = religion)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Religión",
+       y = "Porcentaje (%)",
+       fill = "Religión") +
+  ggtitle("Porcentaje de Encuestas por Religión") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        axis.text.y = element_text(size = 10))
+
+```
+
+#### ocupacion
+
+```{r}
+df_encuesta %>%
+  count(`ocupacion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`ocupacion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(ocupacion)) %>%
+  ggplot(aes(x = porc, y = reorder(ocupacion, -porc), fill = ocupacion)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), hjust = 0.4, size = 3) +
+  labs(x = "Porcentaje (%)",
+       y = "Ocupación",
+       fill = "Ocupación") +
+  ggtitle("Porcentaje de Encuestas por Ocupación") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.y = element_text(size = 8, hjust = 1),
+        axis.text.x = element_text(size = 10))
+
+```
+
+#### genero
+
+```{r}
+df_encuesta %>%
+  count(`genero`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`genero`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(genero)) %>%
+  ggplot(aes(x = reorder(genero, -porc), y = porc, fill = genero)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Género",
+       y = "Porcentaje (%)",
+       fill = "Género") +
+  ggtitle("Porcentaje de Encuestas por Género") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5),
+        axis.text.y = element_text(size = 10))
+```
+
+#### origen
+
+```{r}
+df_encuesta %>%
+  count(`origen`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`origen`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(origen)) %>%
+  ggplot(aes(x = reorder(origen, -porc), y = porc, fill = origen)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Origen",
+       y = "Porcentaje (%)",
+       fill = "Origen") +
+  ggtitle("Porcentaje de Encuestas por Origen") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(size = 8, angle = 20, vjust = 1, hjust = 0.9),
+        axis.text.y = element_text(size = 10))
+```
+
+#### edad
+
+```{r}
+df_encuesta %>%
+  count(`edad`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`edad`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(edad)) %>%
+  ggplot(aes(x = reorder(edad, -porc), y = porc, fill = edad)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Edad",
+       y = "Porcentaje (%)",
+       fill = "Edad") +
+  ggtitle("Porcentaje de Encuestas por Edad") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5),
+        axis.text.y = element_text(size = 10))
+```
+
+#### que-estudios-has-terminado
+
+```{r}
+df_encuesta %>%
+  count(`que-estudios-has-terminado`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`que-estudios-has-terminado`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(`que-estudios-has-terminado`)) %>%
+  ggplot(aes(x = porc, y = reorder(`que-estudios-has-terminado`, -porc), fill = `que-estudios-has-terminado`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), hjust = 1.1, size = 3) +
+  labs(x = "Porcentaje (%)",
+       y = "Estudios Terminados",
+       fill = "Estudios Terminados") +
+  ggtitle("Porcentaje de Encuestas por Estudios Terminados") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.y = element_text(size = 7, hjust = 0.85),
+        axis.text.x = element_text(size = 10))
+```
+
+#### cuantos-habitantes-tiene-el-municipio-en-el-que-vives
+
+```{r}
+df_encuesta %>%
+  count(`cuantos-habitantes-tiene-el-municipio-en-el-que-vives`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`cuantos-habitantes-tiene-el-municipio-en-el-que-vives`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  filter(!is.na(`cuantos-habitantes-tiene-el-municipio-en-el-que-vives`)) %>%
+  ggplot(aes(x = reorder(`cuantos-habitantes-tiene-el-municipio-en-el-que-vives`, -porc), y = porc, fill = `cuantos-habitantes-tiene-el-municipio-en-el-que-vives`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Cantidad de Habitantes en el Municipio",
+       y = "Porcentaje (%)",
+       fill = "Cantidad de Habitantes") +
+  ggtitle("Porcentaje de Encuestas por Cantidad de Habitantes en el Municipio del encuestado") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        axis.text.y = element_text(size = 10))
+```
+
+### Variables binarias y de opción múltiple
+
+#### Coches-combustion-fosil
+
+```{r}
+df_encuesta %>%
+  count(`coches-combustion-fosil`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n),
+         cumul = cumsum(porc))
+
+```
+
+```{r}
+df_encuesta %>%
+  count(`coches-combustion-fosil`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`coches-combustion-fosil`, -porc), y = porc, fill = `coches-combustion-fosil`)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Tipo de Coche", y = "Porcentaje (%)", fill = "Tipo de Coche") +
+  ggtitle("Porcentaje de Tipos de Coches a Combustión Fósil") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+#### nivel-de-concienciacion
+
+```{r}
+df_encuesta %>%
+  count(`nivel-de-concienciacion`, sort = TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`nivel-de-concienciacion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`nivel-de-concienciacion`, -porc),
+             y = porc, fill = `nivel-de-concienciacion`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5) +
+  labs(x = "Nivel de Concienciación",
+       y = "Porcentaje (%)",
+       fill = "Nivel de Concienciación") +
+  ggtitle("Porcentaje de Niveles de Concienciación") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+#### con-cual-de-estas-opciones-tiene-relacion-el-cambio-climatico-elige-las-que-te-parezcan
+
+```{r}
+df_encuesta %>%
+  count(`con-cual-de-estas-opciones-tiene-relacion-el-cambio-climatico-elige-las-que-te-parezcan`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### cuanto-espacio-crees-que-se-le-da-al-cambio-climatico-en-los-medios-de-comunicacion
+
+```{r}
+df_encuesta %>%
+  count(`cuanto-espacio-crees-que-se-le-da-al-cambio-climatico-en-los-medios-de-comunicacion`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`cuanto-espacio-crees-que-se-le-da-al-cambio-climatico-en-los-medios-de-comunicacion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`cuanto-espacio-crees-que-se-le-da-al-cambio-climatico-en-los-medios-de-comunicacion`, -porc),
+             y = porc, fill = `cuanto-espacio-crees-que-se-le-da-al-cambio-climatico-en-los-medios-de-comunicacion`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5) +
+  labs(x = "Percepción de Espacio en Medios de Comunicación",
+       y = "Porcentaje (%)",
+       fill = "Percepción de Espacio en Medios de Comunicación") +
+  ggtitle("Percepción de Espacio en Medios de Comunicación para Cambio Climático") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+#### las-actuales-politicas-climaticas-nos-van-a-hacer-vivir
+
+```{r}
+df_encuesta %>%
+  count(`las-actuales-politicas-climaticas-nos-van-a-hacer-vivir`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`las-actuales-politicas-climaticas-nos-van-a-hacer-vivir`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`las-actuales-politicas-climaticas-nos-van-a-hacer-vivir`, -porc),
+             y = porc, fill = `las-actuales-politicas-climaticas-nos-van-a-hacer-vivir`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5) +
+  labs(x = "Calidad de vida respecto a Políticas Climáticas",
+       y = "Porcentaje (%)",
+       fill = "Nivel de vida frente a Políticas Climáticas") +
+  ggtitle("Nivel de vida frente a Políticas Climáticas") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+#### cuanto-crees-que-te-va-a-afectar-la-crisis-climatica-en-tu-vida-personal
+
+```{r}
+df_encuesta %>%
+  count(`cuanto-crees-que-te-va-a-afectar-la-crisis-climatica-en-tu-vida-personal`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`cuanto-crees-que-te-va-a-afectar-la-crisis-climatica-en-tu-vida-personal`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`cuanto-crees-que-te-va-a-afectar-la-crisis-climatica-en-tu-vida-personal`, -porc),
+             y = porc, fill = `cuanto-crees-que-te-va-a-afectar-la-crisis-climatica-en-tu-vida-personal`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5) +
+  labs(x = "Percepción de Afectación Personal por Crisis Climática",
+       y = "Porcentaje (%)",
+       fill = "Percepción de Afectación Personal") +
+  ggtitle("Afectación Personal por Crisis Climática") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+#### cuando-escuchas-hablar-de-crisis-climatica-que-sientes
+
+```{r}
+df_encuesta %>%
+  count(`cuando-escuchas-hablar-de-crisis-climatica-que-sientes`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### has-pensado-alguna-vez-que-estabas-sufriendo-ecoansiedad
+
+```{r}
+df_encuesta %>%
+  count(`has-pensado-alguna-vez-que-estabas-sufriendo-ecoansiedad`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`has-pensado-alguna-vez-que-estabas-sufriendo-ecoansiedad`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = porc, y = reorder(`has-pensado-alguna-vez-que-estabas-sufriendo-ecoansiedad`, -porc),
+             fill = `has-pensado-alguna-vez-que-estabas-sufriendo-ecoansiedad`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), hjust = 3, size = 3) +
+  labs(x = "Porcentaje (%)",
+       y = "Percepción de Ecoansiedad",
+       fill = "Percepción de Ecoansiedad") +
+  ggtitle("Percepción de Ecoansiedad") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_x_continuous(labels = scales::percent_format(scale = 1))
+
+```
+
+#### crees-que-la-implicacion-politica-de-los-jovenes-podria-llegar-a-provocar-cambios-politicos-significativos-en-la-lucha-contra-el-cambio-climatico
+
+```{r}
+df_encuesta %>%
+  count(`crees-que-la-implicacion-politica-de-los-jovenes-podria-llegar-a-provocar-cambios-politicos-significativos-en-la-lucha-contra-el-cambio-climatico`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`crees-que-la-implicacion-politica-de-los-jovenes-podria-llegar-a-provocar-cambios-politicos-significativos-en-la-lucha-contra-el-cambio-climatico`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`crees-que-la-implicacion-politica-de-los-jovenes-podria-llegar-a-provocar-cambios-politicos-significativos-en-la-lucha-contra-el-cambio-climatico`, -porc),
+             y = porc, fill = `crees-que-la-implicacion-politica-de-los-jovenes-podria-llegar-a-provocar-cambios-politicos-significativos-en-la-lucha-contra-el-cambio-climatico`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5) +
+  labs(x = "Percepción de Afectación",
+       y = "Porcentaje (%)",
+       fill = "Percepción de Implicación Política") +
+  ggtitle("Afectará la implicación Política de Jóvenes en la Lucha contra el Cambio Climático?") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
+```
+
+#### como-estas-viviendo-la-subida-de-precios-de-la-energia
+
+```{r}
+df_encuesta %>%
+  count(`como-estas-viviendo-la-subida-de-precios-de-la-energia`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`como-estas-viviendo-la-subida-de-precios-de-la-energia`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = "", y = porc, fill = `como-estas-viviendo-la-subida-de-precios-de-la-energia`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(fill = "Percepción sobre Subida de Precios de Energía") +
+  ggtitle("Percepción sobre Subida de Precios de Energía") +
+  theme_void() +
+  theme(legend.position = "right") +
+  geom_text(position = position_stack(vjust = 0.5))
+```
+
+#### crees-que-el-actual-modelo-productivo-basado-en-la-explotacion-de-los-recursos-naturales-deberia-evolucionar
+
+```{r}
+df_encuesta %>%
+  count(`crees-que-el-actual-modelo-productivo-basado-en-la-explotacion-de-los-recursos-naturales-deberia-evolucionar`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`crees-que-el-actual-modelo-productivo-basado-en-la-explotacion-de-los-recursos-naturales-deberia-evolucionar`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`crees-que-el-actual-modelo-productivo-basado-en-la-explotacion-de-los-recursos-naturales-deberia-evolucionar`, -porc),
+             y = porc, fill = `crees-que-el-actual-modelo-productivo-basado-en-la-explotacion-de-los-recursos-naturales-deberia-evolucionar`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Percepción sobre Evolución del Modelo Productivo",
+       y = "Porcentaje (%)",
+       fill = "Percepción sobre Evolución del Modelo Productivo") +
+  ggtitle("Distribución de Percepción sobre Evolución del Modelo Productivo") +
+  theme_minimal() +
+  theme(legend.position = "down") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  theme(axis.text.x = element_text(size = 7, angle = 15, vjust = 0.8, hjust = 0.5),  # Etiquetas en diagonal
+        axis.text.y = element_text(size = 10),  # Reducción del tamaño de letra
+        plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"))  # Ajuste del margen para hacer el gráfico más grande
+
+```
+
+#### cuantos-libros-hay-en-tu-casa
+
+```{r}
+df_encuesta %>%
+  count(`cuantos-libros-hay-en-tu-casa`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`cuantos-libros-hay-en-tu-casa`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`cuantos-libros-hay-en-tu-casa`, -porc),
+             y = porc, fill = `cuantos-libros-hay-en-tu-casa`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +  # Reducción de tamaño de letra
+  labs(x = "Cantidad de Libros en Casa",
+       y = "Porcentaje (%)",
+       fill = "Cantidad de Libros en Casa") +
+  ggtitle("Porcentaje de Cantidad de Libros en Casa") +
+  theme_minimal() +
+  theme(legend.position = "down") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),  # Etiquetas en diagonal
+        axis.text.y = element_text(size = 10),  # Reducción del tamaño de letra
+        plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"))  # Ajuste del margen
+
+```
+
+#### comerias-mas-alimentos-bajos-en-emisiones-si-el-gobierno-facilitase-su-consumo
+
+```{r}
+df_encuesta %>%
+  count(`comerias-mas-alimentos-bajos-en-emisiones-si-el-gobierno-facilitase-su-consumo`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`comerias-mas-alimentos-bajos-en-emisiones-si-el-gobierno-facilitase-su-consumo`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`comerias-mas-alimentos-bajos-en-emisiones-si-el-gobierno-facilitase-su-consumo`, -porc),
+             y = porc, fill = `comerias-mas-alimentos-bajos-en-emisiones-si-el-gobierno-facilitase-su-consumo`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Comerías más alimentos bajos en emisiones si el gobierno facilitase su consumo",
+       y = "Porcentaje (%)",
+       fill = "Comerías más alimentos bajos en emisiones si el gobierno facilitase su consumo") +
+  ggtitle("Porcentaje de Opinión sobre Consumo de Alimentos Bajos en Emisiones") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### indica-si-tienes-aparatos-electronicos-de-este-tipo-en-tu-cas
+
+```{r}
+df_encuesta %>%
+  count(`indica-si-tienes-aparatos-electronicos-de-este-tipo-en-tu-cas`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### en-que-sector-se-deberian-priorizar-las-inversiones
+
+```{r}
+df_encuesta %>%
+  count(`en-que-sector-se-deberian-priorizar-las-inversiones`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### grado-de-relacion
+
+```{r}
+df_encuesta %>%
+  count(`grado-de-relacion`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`grado-de-relacion`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`grado-de-relacion`, -porc),
+             y = porc, fill = `grado-de-relacion`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Grado de Relación con el Cambio Climático",
+       y = "Porcentaje (%)",
+       fill = "Grado de Relación") +
+  ggtitle("Porcentaje de Grado de Relación con el Cambio Climático") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas 
+```
+
+#### que-medida-consideras-mas-efectiva-para-mejorar-la-calidad-del-aire-en-las-ciudades-senala-al-menos-3
+
+```{r}
+df_encuesta %>%
+  count(`que-medida-consideras-mas-efectiva-para-mejorar-la-calidad-del-aire-en-las-ciudades-senala-al-menos-3`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### que-valoras-mas
+
+```{r}
+df_encuesta %>%
+  count(`que-valoras-mas`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### que-tipo-de-acciones-relacionadas-con-la-sensibilidad-climatica-has-introducido-en-tu-vida-se-pueden-marcar-varias-opciones
+
+```{r}
+df_encuesta %>%
+  count(`que-tipo-de-acciones-relacionadas-con-la-sensibilidad-climatica-has-introducido-en-tu-vida-se-pueden-marcar-varias-opciones`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### te-gustaria-trabajar-en-una-posicion-con-impacto-positivo-tanto-social-como-medioambiental
+
+```{r}
+df_encuesta %>%
+  count(`te-gustaria-trabajar-en-una-posicion-con-impacto-positivo-tanto-social-como-medioambiental`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`te-gustaria-trabajar-en-una-posicion-con-impacto-positivo-tanto-social-como-medioambiental`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`te-gustaria-trabajar-en-una-posicion-con-impacto-positivo-tanto-social-como-medioambiental`, -porc),
+             y = porc, fill = `te-gustaria-trabajar-en-una-posicion-con-impacto-positivo-tanto-social-como-medioambiental`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Trabajarías en Posición con Impacto Positivo social y medioambiental?",
+       y = "Porcentaje (%)",
+       fill = "Opinión sobre Trabajar en posicion con Impacto Positivo social y medioambiental") +
+  ggtitle("Percepción sobre Trabajar en posicion con Impacto Positivo social y medioambiental") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### a-que-crees-que-afectara-el-cambio-climaticose-pueden-marcar-varias-opciones
+
+```{r}
+df_encuesta %>%
+  count(`a-que-crees-que-afectara-el-cambio-climaticose-pueden-marcar-varias-opciones`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### quien-crees-que-deberia-liderar-la-lucha-contra-la-crisis-climatica-se-pueden-marcar-varias-opciones
+
+```{r}
+df_encuesta %>%
+  count(`quien-crees-que-deberia-liderar-la-lucha-contra-la-crisis-climatica-se-pueden-marcar-varias-opciones`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### conoces-la-ley-de-cambio-climatico-y-transicion-energetica-del-gobierno-de-espana
+
+```{r}
+df_encuesta %>%
+  count(`conoces-la-ley-de-cambio-climatico-y-transicion-energetica-del-gobierno-de-espana`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`conoces-la-ley-de-cambio-climatico-y-transicion-energetica-del-gobierno-de-espana`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`conoces-la-ley-de-cambio-climatico-y-transicion-energetica-del-gobierno-de-espana`, -porc),
+             y = porc, fill = `conoces-la-ley-de-cambio-climatico-y-transicion-energetica-del-gobierno-de-espana`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Conocimiento sobre la Ley de Cambio Climático y Transición Energética",
+       y = "Porcentaje (%)",
+       fill = "Conocimiento de la Ley de Cambio Climático") +
+  ggtitle("Porcentaje de Conocimiento sobre la Ley de Cambio Climático") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### senala-aquellas-personas-que-crees-que-van-verse-afectadas-por-el-cambio-climatico
+
+```{r}
+df_encuesta %>%
+  count(`senala-aquellas-personas-que-crees-que-van-verse-afectadas-por-el-cambio-climatico`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### que-tipo-de-viajes-realizas-mas-frecuentemente
+
+```{r}
+df_encuesta %>%
+  count(`que-tipo-de-viajes-realizas-mas-frecuentemente`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`que-tipo-de-viajes-realizas-mas-frecuentemente`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`que-tipo-de-viajes-realizas-mas-frecuentemente`, -porc),
+             y = porc, fill = `que-tipo-de-viajes-realizas-mas-frecuentemente`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Tipo de Viajes Realizados Más Frecuentemente",
+       y = "Porcentaje (%)",
+       fill = "Tipo de Viajes") +
+  ggtitle("Porcentaje de Tipos de Viajes Realizados Más Frecuentemente") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### cuantas-de-estas-cosas-hay-en-tu-casa
+
+```{r}
+df_encuesta %>%
+  count(`cuantas-de-estas-cosas-hay-en-tu-casa`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### pensando-en-tu-futuro-inmediato-que-te-preocupa-mas-elige-tres
+
+```{r}
+df_encuesta %>%
+  count(`pensando-en-tu-futuro-inmediato-que-te-preocupa-mas-elige-tres`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### consideras-que-se-planifica-a-largo-plazo-desde-las-instituciones-para-contrarrestar-la-emergencia-climatica
+
+```{r}
+df_encuesta %>%
+  count(`consideras-que-se-planifica-a-largo-plazo-desde-las-instituciones-para-contrarrestar-la-emergencia-climatica`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`consideras-que-se-planifica-a-largo-plazo-desde-las-instituciones-para-contrarrestar-la-emergencia-climatica`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`consideras-que-se-planifica-a-largo-plazo-desde-las-instituciones-para-contrarrestar-la-emergencia-climatica`, -porc),
+             y = porc, fill = `consideras-que-se-planifica-a-largo-plazo-desde-las-instituciones-para-contrarrestar-la-emergencia-climatica`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Consideras que se Planifica a Largo Plazo para Contrarrestar la Emergencia Climática",
+       y = "Porcentaje (%)",
+       fill = "Opinión") +
+  ggtitle("Opinión sobre Planificación a Largo Plazo para Contrarrestar la Emergencia Climática") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### de-la-siguiente-lista-marca-las-cosas-que-haya-en-tu-casa
+
+```{r}
+df_encuesta %>%
+  count(`de-la-siguiente-lista-marca-las-cosas-que-haya-en-tu-casa`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+para poder procesar de mejor manera esta pregunta, será necesario separar las opciones de las respuestas como individuales y poder tener una frecuencia real de cada una de las opciones con las que los individuos consideran tiene relación el cambio climático. Lo cual se realizará en la limpieza de datos para esta y todas las preguntas que tengan la posibilidad de elegir más de una opción.
+
+#### conoces-la-asamblea-ciudadana-para-el-clima
+
+```{r}
+df_encuesta %>%
+  count(`conoces-la-asamblea-ciudadana-para-el-clima`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`conoces-la-asamblea-ciudadana-para-el-clima`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`conoces-la-asamblea-ciudadana-para-el-clima`, -porc),
+             y = porc, fill = `conoces-la-asamblea-ciudadana-para-el-clima`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Conocimiento sobre la Asamblea Ciudadana para el Clima",
+       y = "Porcentaje (%)",
+       fill = "Conocimiento") +
+  ggtitle("Porcentaje de Conocimiento sobre la Asamblea Ciudadana para el Clima") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### alguna-vez-has-consultado-un-informe-del-ipcc-panel-internacional-sobre-cambio-climatico
+
+```{r}
+df_encuesta %>%
+  count(`alguna-vez-has-consultado-un-informe-del-ipcc-panel-internacional-sobre-cambio-climatico`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`alguna-vez-has-consultado-un-informe-del-ipcc-panel-internacional-sobre-cambio-climatico`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`alguna-vez-has-consultado-un-informe-del-ipcc-panel-internacional-sobre-cambio-climatico`, -porc),
+             y = porc, fill = `alguna-vez-has-consultado-un-informe-del-ipcc-panel-internacional-sobre-cambio-climatico`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Consultaste un Informe del IPCC (Panel Internacional sobre Cambio Climático)",
+       y = "Porcentaje (%)",
+       fill = "Consulta") +
+  ggtitle("Consulta de Informes del IPCC(Panel Internacional sobre Cambio Climático)") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(size = 8, angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### sabes-lo-que-son-las-cop-cumbre-anual-que-realiza-la-convencion-marco-de-las-naciones-unidas-sobre-el-cambio-climatico
+
+```{r}
+df_encuesta %>%
+  count(`sabes-lo-que-son-las-cop-cumbre-anual-que-realiza-la-convencion-marco-de-las-naciones-unidas-sobre-el-cambio-climatico`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`sabes-lo-que-son-las-cop-cumbre-anual-que-realiza-la-convencion-marco-de-las-naciones-unidas-sobre-el-cambio-climatico`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`sabes-lo-que-son-las-cop-cumbre-anual-que-realiza-la-convencion-marco-de-las-naciones-unidas-sobre-el-cambio-climatico`, -porc),
+             y = porc, fill = `sabes-lo-que-son-las-cop-cumbre-anual-que-realiza-la-convencion-marco-de-las-naciones-unidas-sobre-el-cambio-climatico`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Sabes lo que son las COP",
+       y = "Porcentaje (%)",
+       fill = "Conocimiento") +
+  ggtitle("Porcentaje de Conocimiento sobre las COP") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(size = 7, angle = 10, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### senala-del-1-al-10-cuanto-crees-que-vas-vivir-respecto-la-forma-en-que-lo-hicieron-tus-padres-causa-del-cambio-climatico-1-peor-10-mejor
+
+```{r}
+df_encuesta %>%
+  count(`senala-del-1-al-10-cuanto-crees-que-vas-vivir-respecto-la-forma-en-que-lo-hicieron-tus-padres-causa-del-cambio-climatico-1-peor-10-mejor`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`senala-del-1-al-10-cuanto-crees-que-vas-vivir-respecto-la-forma-en-que-lo-hicieron-tus-padres-causa-del-cambio-climatico-1-peor-10-mejor`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  arrange(`senala-del-1-al-10-cuanto-crees-que-vas-vivir-respecto-la-forma-en-que-lo-hicieron-tus-padres-causa-del-cambio-climatico-1-peor-10-mejor`) %>%
+  ggplot(aes(x = `senala-del-1-al-10-cuanto-crees-que-vas-vivir-respecto-la-forma-en-que-lo-hicieron-tus-padres-causa-del-cambio-climatico-1-peor-10-mejor`, y = porc, label = paste0(round(porc, 1), "%"))) +
+  geom_line() +
+  geom_point() +
+  geom_text(vjust = -0.5, size = 3) +
+  labs(x = "Vivirás Mejor o Peor por el cambio climático en Comparación con Padres",
+       y = "Porcentaje (%)",
+       title = "Percepción de Nivel de Vida por Impacto Climático en Comparación con Padres") +
+  scale_x_continuous(breaks = 1:10, labels = c("1 (peor)", "2", "3", "4", "5", "6", "7", "8", "9", "10 (mejor)")) +
+  scale_y_continuous(limits = c(0, 20)) +
+  theme_minimal()
+```
+
+#### como-afrontas-el-futuro
+
+```{r}
+df_encuesta %>%
+  count(`como-afrontas-el-futuro`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`como-afrontas-el-futuro`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`como-afrontas-el-futuro`, -porc), y = porc, fill = `como-afrontas-el-futuro`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "Forma de Afrontar el Futuro",
+       y = "Porcentaje (%)",
+       fill = "Forma de Afrontar el Futuro") +
+  ggtitle("Porcentaje de Formas de Afrontar el Futuro") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5),
+        axis.text.y = element_text(size = 10))
+```
+
+#### la-solucion-a-la-crisis-climatica-vendra
+
+```{r}
+df_encuesta %>%
+  count(`la-solucion-a-la-crisis-climatica-vendra`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`la-solucion-a-la-crisis-climatica-vendra`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`la-solucion-a-la-crisis-climatica-vendra`, -porc), y = porc, fill = `la-solucion-a-la-crisis-climatica-vendra`)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(porc, 1), "%")), vjust = -0.5, size = 3) +
+  labs(x = "La solución a la crisis climática vendrá",
+       y = "Porcentaje (%)",
+       fill = "Opinión sobre la Solución a la Crisis Climática") +
+  ggtitle("Opinión sobre la Solución a la Crisis Climática") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(size = 7.5, angle = 15, vjust = 1, hjust = 0.7),
+        axis.text.y = element_text(size = 10))
+```
+
+### Variables binarias
+
+#### crees-que-las-empresas-mas-contaminantes-deberian-pagar-mas-impuestos-que-aquellas-que-no-contaminan-tanto
+
+```{r}
+df_encuesta %>%
+  count(`crees-que-las-empresas-mas-contaminantes-deberian-pagar-mas-impuestos-que-aquellas-que-no-contaminan-tanto`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`crees-que-las-empresas-mas-contaminantes-deberian-pagar-mas-impuestos-que-aquellas-que-no-contaminan-tanto`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`crees-que-las-empresas-mas-contaminantes-deberian-pagar-mas-impuestos-que-aquellas-que-no-contaminan-tanto`, -porc),
+             y = porc, fill = `crees-que-las-empresas-mas-contaminantes-deberian-pagar-mas-impuestos-que-aquellas-que-no-contaminan-tanto`)) +
+  geom_bar(stat = "identity") +
+  labs(x = "¿Crees que las empresas más contaminantes deberían pagar más impuestos?",
+       y = "Porcentaje (%)",
+       fill = "Opinión sobre Impuestos a Empresas Contaminantes") +
+  ggtitle("Porcentaje de Opinión sobre Impuestos a Empresas Contaminantes") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas
+```
+
+#### estarias-dispuesto-a-aumentar-el-tiempo-de-trayecto-en-tus-viajes-de-ocio-mediante-la-utilizacion-de-transportes-menos-contaminantes
+
+```{r}
+df_encuesta %>%
+  count(`estarias-dispuesto-a-aumentar-el-tiempo-de-trayecto-en-tus-viajes-de-ocio-mediante-la-utilizacion-de-transportes-menos-contaminantes`, sort= TRUE) %>%
+  mutate(porc = 100*n/sum(n),
+         cumul = cumsum(porc))
+```
+
+```{r}
+df_encuesta %>%
+  count(`estarias-dispuesto-a-aumentar-el-tiempo-de-trayecto-en-tus-viajes-de-ocio-mediante-la-utilizacion-de-transportes-menos-contaminantes`, sort = TRUE) %>%
+  mutate(porc = 100 * n / sum(n)) %>%
+  ggplot(aes(x = reorder(`estarias-dispuesto-a-aumentar-el-tiempo-de-trayecto-en-tus-viajes-de-ocio-mediante-la-utilizacion-de-transportes-menos-contaminantes`, -porc),
+             y = porc, fill = `estarias-dispuesto-a-aumentar-el-tiempo-de-trayecto-en-tus-viajes-de-ocio-mediante-la-utilizacion-de-transportes-menos-contaminantes`, label = paste0(round(porc, 1), "%"))) +
+  geom_bar(stat = "identity") +
+  geom_text(vjust = -0.5, size = 3) +  # Etiquetas con porcentajes
+  labs(x = "Disposición de Uso de Transportes Menos Contaminantes con Trayectos Más Demorados",
+       y = "Porcentaje (%)",
+       fill = "Opinión sobre Uso de Transportes Menos Contaminantes") +
+  ggtitle("Porcentaje de Opinión sobre Uso de Transportes Menos Contaminantes") +
+  theme_minimal() +
+  theme(legend.position = "down",
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5))  # Etiquetas  
+```
